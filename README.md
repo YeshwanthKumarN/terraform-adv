@@ -34,6 +34,7 @@ Initialization
 ---------------
 
 terraform init   >>  https://developer.hashicorp.com/terraform/cli/commands/init
+Note: Everytime you add a new provider we need to run init
 
 @YeshwanthKumarN ➜ /workspaces/terraform-adv (main) $ terraform init
 Initializing the backend...
@@ -216,5 +217,60 @@ github_repository.create-repo: Destruction complete after 1s
 
 Destroy complete! Resources: 1 destroyed.
 
-   
+Resource Addresses
+-------------------
+Ref: https://developer.hashicorp.com/terraform/language/syntax/configuration#identifiers
+Important concept - used to refer the values from right parent instead of statically mentioning the names, through this approach terraform understand the order.
+
+resource "github_repository" "create-repo" {
+  name        = "demo-repo"
+  description = "Demo repo created and managed by TF"
+  visibility  = "public"
+  auto_init   = true
+}
+
+resource "github_repository_file" "create-readme" {
+  repository          = github_repository.create-repo.name
+  branch              = "main"
+  file                = "README.md"
+  content             = "Managed by Terraform"
+  overwrite_on_create = true
+}
+
+Check the Deom repo created
+-------------------------
+
+gh repo view demo-repo --web
+
+State & Backup File
+--------------------
+
+Note: 
+1. Never modify the state file manually, especially in production
+2. To view the current contents in the state file (access is usually restricted), run terraform show -json | jq
+3. To list all the resources in the state - terraform state list
+
+Excercise
+----------
+
+Create a new file (index.html) and 
+
+@YeshwanthKumarN ➜ /workspaces/terraform-adv/terraform-code (main) $ terraform apply plan3
+github_repository_file.create-index: Creating...
+github_repository_file.create-index: Creation complete after 3s [id=demo-repo/index.hmtl]
+
+Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
+
+Fun Fact
+-------
+Remember there is a provider for Random content like strings, dates and so on.
+
+Terraform Console
+-----------------
+
+A Debugger mode for terraform to validate expressions, logics
+Note: The input is the state file
+
+'terraform console -state=../state/terraform.tfstate'
+
 
