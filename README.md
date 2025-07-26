@@ -267,10 +267,19 @@ Remember there is a provider for Random content like strings, dates and so on.
 
 Terraform Console
 -----------------
-
 A Debugger mode for terraform to validate expressions, logics
 Note: The input is the state file
 
 'terraform console -state=../state/terraform.tfstate'
+
+rm and refresh-only
+--------------------
+If there are modifications outside the state file, then run any of the following command to sync with changes
+
+terraform plan refresh-only
+teraform state rm -dry-run "resource-name"
+
+
+
 
 
